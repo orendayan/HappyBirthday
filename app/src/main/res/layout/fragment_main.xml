@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/main_start_marging"
+        android:layout_marginEnd="@dimen/main_end_marging"
+        android:layout_marginTop="@dimen/main_top_marging">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name_title"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/min_width_edit"
+            android:id="@+id/kid_name"
+            android:layout_marginStart="@dimen/inner_margin"
+            android:gravity="center_horizontal"
+            android:hint="@string/name_hint"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:ems="10"
+            android:maxLength="30"
+            android:nextFocusDown="@+id/editDate"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/main_start_marging"
+        android:layout_marginEnd="@dimen/main_end_marging"
+        android:layout_marginTop="@dimen/main_top_marging">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/birthday_title"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:ems="10"
+            android:focusable="false"
+            android:id="@+id/editDate"
+            android:hint="@string/date_hint"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/inner_margin"
+            android:singleLine="true"
+            android:maxLength="30"/>
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_marginStart="@dimen/main_start_marging"
+        android:layout_marginEnd="@dimen/main_end_marging"
+        android:layout_marginTop="@dimen/main_top_marging"
+        android:id="@+id/img_main"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_height"
+        android:layout_margin="@dimen/inner_margin"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/placeholder"/>
+
+    <Button
+        android:id="@+id/btn_show_bd_scr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/main_start_marging"
+        android:text="@string/show_birthday_screen"
+        android:enabled="false"
+        />
+
+
+</LinearLayout>
+
