@@ -3,6 +3,7 @@ package com.orend.happybirthday.fragments;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.orend.happybirthday.model.Child;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +45,10 @@ public class SetBirthdayFragment extends Fragment {
     //     CONST VARS
     /*********************/
     private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String BABY_NAME = "baby_name";
+    private static final String BABY_DATE = "baby_date";
+    private static final String BABY_IMAGE_URI = "baby_image";
+
 
     /*********************/
     // PRIVATE VARS
@@ -56,7 +62,7 @@ public class SetBirthdayFragment extends Fragment {
     private ImageView mImageView;
     private Uri mImageUri;
     private Button mBtnShowBirthdayScreen;
-
+    private SharedPreferences mSharedPref;
 
     public SetBirthdayFragment() {
         // Required empty public constructor
@@ -78,6 +84,7 @@ public class SetBirthdayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
         mEditDate = (EditText) rootView.findViewById(R.id.editDate);
         mEditName = (EditText) rootView.findViewById(R.id.kid_name);
 
@@ -95,6 +102,9 @@ public class SetBirthdayFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 mBtnShowBirthdayScreen.setEnabled(!editable.toString().isEmpty() && !mEditDate.getText().toString().isEmpty());
+                if(!editable.toString().isEmpty()) {
+                    mSharedPref.edit().putString(BABY_NAME, editable.toString()).apply();
+                }
             }
         });
 
@@ -128,6 +138,7 @@ public class SetBirthdayFragment extends Fragment {
                         mCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
         return rootView;
     }
 
@@ -160,6 +171,23 @@ public class SetBirthdayFragment extends Fragment {
                         .start(0); // image selection title
             }
         });
+
+        //init with persistent data
+        mSharedPref = getActivity().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        if(!mSharedPref.getAll().isEmpty()) {
+            mEditName.setText(mSharedPref.getString(BABY_NAME, ""));
+            long date = mSharedPref.getLong(BABY_DATE, -1);
+            if(date != -1) {
+                mCalendar.setTimeInMillis(date);
+                mEditDate.setText(mSimpleDateFormat.format(mCalendar.getTime()));
+            }
+            String imgPath = mSharedPref.getString(BABY_IMAGE_URI, null);
+            if(imgPath != null) {
+                mImageUri = Uri.parse(imgPath);
+                mImageView.setImageBitmap(BitmapFactory.decodeFile(imgPath));
+            }
+        }
     }
 
     @Override
@@ -183,8 +211,10 @@ public class SetBirthdayFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         List<Image> images = ImagePicker.getImages(data);
         if (images != null && !images.isEmpty()) {
+            String imgPath = images.get(0).getPath();
             mImageView.setImageBitmap(BitmapFactory.decodeFile(images.get(0).getPath()));
             mImageUri = Uri.parse(images.get(0).getPath());
+            mSharedPref.edit().putString(BABY_IMAGE_URI, imgPath).apply();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -200,8 +230,10 @@ public class SetBirthdayFragment extends Fragment {
     }
 
     private void updateDate() {
-        mEditDate.setText(mSimpleDateFormat.format(mCalendar.getTime()));
+        Date date = mCalendar.getTime();
+        mEditDate.setText(mSimpleDateFormat.format(date));
         mBtnShowBirthdayScreen.setEnabled(!mEditName.getText().toString().isEmpty());
+        mSharedPref.edit().putLong(BABY_DATE, date.getTime()).apply();
     }
 
     /***************************/
